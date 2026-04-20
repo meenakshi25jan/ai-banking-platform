@@ -1,0 +1,33 @@
+{
+  "journey": "login",
+  "version": "login.v1",
+  "rules": [
+    {
+      "id": "block-high-fraud",
+      "priority": 100,
+      "field": "fraud.score",
+      "operator": ">",
+      "value": 0.9,
+      "decision": "BLOCK",
+      "reason": "Fraud score exceeded login threshold"
+    },
+    {
+      "id": "verify-new-device",
+      "priority": 90,
+      "field": "behavior.score",
+      "operator": ">",
+      "value": 0.7,
+      "decision": "VERIFY",
+      "reason": "New or anomalous device requires step-up verification"
+    },
+    {
+      "id": "review-low-compliance",
+      "priority": 80,
+      "field": "compliance.score",
+      "operator": "<",
+      "value": 0.5,
+      "decision": "REVIEW",
+      "reason": "Login requires compliance review"
+    }
+  ]
+}

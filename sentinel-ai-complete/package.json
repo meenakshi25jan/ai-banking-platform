@@ -1,0 +1,7 @@
+{
+  "name": "sentinel-ai-complete",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "journey": "transfer",
+  "version": "transfer.v1",
+  "rules": [
+    {
+      "id": "block-high-fraud",
+      "priority": 100,
+      "field": "fraud.score",
+      "operator": ">",
+      "value": 0.85,
+      "decision": "BLOCK",
+      "reason": "Fraud score exceeded threshold"
+    },
+    {
+      "id": "review-low-compliance",
+      "priority": 90,
+      "field": "compliance.score",
+      "operator": "<",
+      "value": 0.45,
+      "decision": "REVIEW",
+      "reason": "Compliance score below threshold"
+    },
+    {
+      "id": "verify-high-intent-risk",
+      "priority": 80,
+      "field": "intent.score",
+      "operator": ">",
+      "value": 0.6,
+      "decision": "VERIFY",
+      "reason": "Intent risk requires step-up verification"
+    },
+    {
+      "id": "review-behavior",
+      "priority": 70,
+      "field": "behavior.score",
+      "operator": ">",
+      "value": 0.75,
+      "decision": "REVIEW",
+      "reason": "Behavior anomaly requires manual review"
+    }
+  ]
+}

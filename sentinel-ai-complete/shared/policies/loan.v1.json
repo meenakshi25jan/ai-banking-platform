@@ -1,0 +1,33 @@
+{
+  "journey": "loan",
+  "version": "loan.v1",
+  "rules": [
+    {
+      "id": "block-high-fraud-loan",
+      "priority": 100,
+      "field": "fraud.score",
+      "operator": ">",
+      "value": 0.9,
+      "decision": "BLOCK",
+      "reason": "Loan application fraud score exceeded threshold"
+    },
+    {
+      "id": "review-loan-compliance",
+      "priority": 90,
+      "field": "compliance.score",
+      "operator": "<",
+      "value": 0.55,
+      "decision": "REVIEW",
+      "reason": "Loan application requires compliance or underwriting review"
+    },
+    {
+      "id": "verify-loan-intent-risk",
+      "priority": 80,
+      "field": "intent.score",
+      "operator": ">",
+      "value": 0.6,
+      "decision": "VERIFY",
+      "reason": "Loan application intent risk requires borrower verification"
+    }
+  ]
+}

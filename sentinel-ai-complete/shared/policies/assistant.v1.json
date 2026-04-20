@@ -1,0 +1,33 @@
+{
+  "journey": "assistant",
+  "version": "assistant.v1",
+  "rules": [
+    {
+      "id": "block-credential-seeking-intent",
+      "priority": 100,
+      "field": "intent.score",
+      "operator": ">",
+      "value": 0.7,
+      "decision": "BLOCK",
+      "reason": "Assistant prompt appears to request sensitive credentials or unsafe actions"
+    },
+    {
+      "id": "review-public-channel-compliance",
+      "priority": 90,
+      "field": "compliance.score",
+      "operator": "<",
+      "value": 0.75,
+      "decision": "REVIEW",
+      "reason": "Assistant response requires compliance review"
+    },
+    {
+      "id": "verify-high-urgency-assistant",
+      "priority": 80,
+      "field": "urgency.score",
+      "operator": ">",
+      "value": 0.55,
+      "decision": "VERIFY",
+      "reason": "High-pressure assistant request requires step-up verification"
+    }
+  ]
+}
