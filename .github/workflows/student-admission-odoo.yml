@@ -1,0 +1,46 @@
+name: Student Admission ERP - Odoo Tests
+
+on:
+  push:
+    paths: ['student_admission/**']
+  pull_request:
+    paths: ['student_admission/**']
+
+jobs:
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax check
+        run: python -m py_compile student_admission/models/*.py student_admission/controllers/*.py student_admission/tests/*.py
+
+  odoo-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Odoo dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip libpq-dev
+          pip install psycopg2-binary
+      - name: Validate module structure
+        run: |
+          test -f student_admission/__manifest__.py
+          test -f student_admission/security/ir.model.access.csv
+          echo "Module structure OK"

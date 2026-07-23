@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
   'name': 'Student Admission ERP',
-  'version': '17.0.1.0.0',
+  'version': '17.0.2.0.0',
   'category': 'Education',
   'summary': 'Student Registration and Admission Management System',
   'description': """
@@ -48,6 +48,7 @@ Features:
     'views/admission_application_views.xml',
     'views/document_verification_views.xml',
     'views/fee_views.xml',
+    'views/scholarship_views.xml',
     'views/dashboard_views.xml',
     'wizard/document_reject_wizard_views.xml',
     'report/report_templates.xml',
@@ -56,6 +57,7 @@ Features:
   ],
   'demo': [
     'demo/demo_data.xml',
+    'demo/demo_users.xml',
   ],
   'assets': {},
   'installable': True,

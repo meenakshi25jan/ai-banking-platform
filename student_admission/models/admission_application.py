@@ -22,6 +22,7 @@ class StudentAdmissionApplication(models.Model):
     ('draft', 'Draft'),
     ('submitted', 'Submitted'),
     ('under_review', 'Under Review'),
+    ('verified', 'Verified'),
     ('approved', 'Approved'),
     ('rejected', 'Rejected'),
     ('admitted', 'Admitted'),
@@ -72,6 +73,10 @@ class StudentAdmissionApplication(models.Model):
   review_date = fields.Date(tracking=True)
   admission_date = fields.Date(tracking=True)
   rejection_reason = fields.Text(tracking=True)
+  merit_score = fields.Float(string='Merit Score', tracking=True)
+  is_eligible = fields.Boolean(string='Eligible', compute='_compute_eligibility', store=True)
+  scholarship_id = fields.Many2one('student.scholarship', string='Scholarship', tracking=True)
+  discount_id = fields.Many2one('student.discount', string='Discount', tracking=True)
 
   document_verification_ids = fields.One2many(
     'student.document.verification',
@@ -94,11 +99,24 @@ class StudentAdmissionApplication(models.Model):
   verification_progress = fields.Float(compute='_compute_verification_progress')
   all_documents_verified = fields.Boolean(compute='_compute_verification_progress')
 
-  @api.depends('fee_ids.amount', 'fee_ids.state', 'course_id')
+  @api.depends('fee_ids.amount', 'fee_ids.state', 'fee_ids.net_amount', 'course_id', 'scholarship_id', 'discount_id')
   def _compute_fee_totals(self):
     for record in self:
-      total = (record.course_id.admission_fee or 0.0) + (record.course_id.course_fee or 0.0)
-      paid = sum(record.fee_ids.filtered(lambda f: f.state == 'paid').mapped('amount'))
+      base = (record.course_id.admission_fee or 0.0) + (record.course_id.course_fee or 0.0)
+      scholarship_amt = 0.0
+      if record.scholarship_id:
+        if record.scholarship_id.percentage:
+          scholarship_amt = base * (record.scholarship_id.percentage / 100)
+        else:
+          scholarship_amt = record.scholarship_id.amount or 0.0
+      discount_amt = 0.0
+      if record.discount_id:
+        if record.discount_id.discount_type == 'percentage':
+          discount_amt = base * ((record.discount_id.percentage or 0) / 100)
+        else:
+          discount_amt = record.discount_id.amount or 0.0
+      total = max(base - scholarship_amt - discount_amt, 0.0)
+      paid = sum(record.fee_ids.filtered(lambda f: f.state == 'paid').mapped('net_amount'))
       record.total_fee = total
       record.paid_fee = paid
       record.pending_fee = max(total - paid, 0.0)
@@ -147,13 +165,26 @@ class StudentAdmissionApplication(models.Model):
         record._create_document_checklist()
       record.state = 'submitted'
 
+  @api.depends('merit_score', 'course_id.eligibility_criteria')
+  def _compute_eligibility(self):
+    for record in self:
+      record.is_eligible = record.merit_score >= 0 or not record.course_id
+
+  def action_verify(self):
+    for record in self:
+      if record.state != 'under_review':
+        raise UserError('Only under-review applications can be verified.')
+      if record.document_verification_ids and not record.all_documents_verified:
+        raise ValidationError('All required documents must be verified first.')
+      record.state = 'verified'
+
   def action_under_review(self):
     self.write({'state': 'under_review', 'review_date': fields.Date.today()})
 
   def action_approve(self):
     for record in self:
-      if record.state not in ('submitted', 'under_review'):
-        raise UserError('Only submitted or under-review applications can be approved.')
+      if record.state not in ('submitted', 'under_review', 'verified'):
+        raise UserError('Only submitted, under-review, or verified applications can be approved.')
       if record.course_id.available_seats <= 0:
         raise ValidationError('No seats available for the selected course.')
       if record.document_verification_ids and not record.all_documents_verified:

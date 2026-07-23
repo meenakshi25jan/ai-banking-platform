@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+      STUDENT_ADMISSION_CORS_ORIGINS: "http://localhost:3000,https://*.vercel.app"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../student_admission:/mnt/extra-addons/student_admission:ro
+    command: >
+      odoo --config=/etc/odoo/odoo.conf
+      --db_host=db --db_user=odoo --db_password=odoo
+      -i student_admission --without-demo=False
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:

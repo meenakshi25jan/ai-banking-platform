@@ -40,6 +40,9 @@ class StudentFeePayment(models.Model):
     ('other', 'Other'),
   ], required=True, tracking=True)
   amount = fields.Monetary(required=True, tracking=True)
+  discount_amount = fields.Monetary(string='Discount', default=0.0)
+  scholarship_amount = fields.Monetary(string='Scholarship', default=0.0)
+  net_amount = fields.Monetary(compute='_compute_net_amount', store=True)
   currency_id = fields.Many2one(
     'res.currency',
     default=lambda self: self.env.company.currency_id,
@@ -66,6 +69,14 @@ class StudentFeePayment(models.Model):
     default=lambda self: self.env.company,
     required=True,
   )
+
+  @api.depends('amount', 'discount_amount', 'scholarship_amount')
+  def _compute_net_amount(self):
+    for record in self:
+      record.net_amount = max(
+        (record.amount or 0) - (record.discount_amount or 0) - (record.scholarship_amount or 0),
+        0.0,
+      )
 
   @api.model_create_multi
   def create(self, vals_list):

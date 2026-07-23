@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from . import scholarship
 from . import academic_year
 from . import campus
 from . import department
