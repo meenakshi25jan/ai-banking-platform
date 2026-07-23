@@ -43,8 +43,8 @@ class StudentAdmissionDashboard(models.TransientModel):
       ])
       paid_fees = Fee.search([('state', '=', 'paid')])
       pending_fees = Fee.search([('state', '=', 'pending')])
-      dashboard.total_fee_collected = sum(paid_fees.mapped('amount'))
-      dashboard.total_fee_pending = sum(pending_fees.mapped('amount'))
+      dashboard.total_fee_collected = sum(paid_fees.mapped('net_amount'))
+      dashboard.total_fee_pending = sum(pending_fees.mapped('net_amount'))
 
   def action_view_applications(self):
     return {
@@ -79,6 +79,15 @@ class StudentAdmissionDashboard(models.TransientModel):
       'res_model': 'student.admission.application',
       'view_mode': 'tree,form',
       'domain': [('state', '=', 'rejected')],
+    }
+
+  def action_view_admitted(self):
+    return {
+      'type': 'ir.actions.act_window',
+      'name': 'Admitted Students',
+      'res_model': 'student.admission.application',
+      'view_mode': 'tree,form',
+      'domain': [('state', '=', 'admitted')],
     }
 
   def action_view_fees(self):

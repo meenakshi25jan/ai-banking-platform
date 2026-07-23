@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_document_reject_wizard_form" model="ir.ui.view">
+    <field name="name">student.document.reject.wizard.form</field>
+    <field name="model">student.document.reject.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Reject Document">
+        <group>
+          <field name="verification_id" invisible="1"/>
+          <field name="remarks"/>
+        </group>
+        <footer>
+          <button name="action_confirm_reject" string="Confirm Rejection" type="object" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_admission_reject_wizard_form" model="ir.ui.view">
+    <field name="name">student.admission.reject.wizard.form</field>
+    <field name="model">student.admission.reject.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Reject Admission">
+        <group>
+          <field name="admission_id" invisible="1"/>
+          <field name="rejection_reason"/>
+        </group>
+        <footer>
+          <button name="action_confirm_reject" string="Confirm Rejection" type="object" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

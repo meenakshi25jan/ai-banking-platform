@@ -1,0 +1,18 @@
+{
+  "name": "odoomitncr-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OdooMITNCR monorepo — Student Admission ERP (Odoo + Next.js) + Banking API",
+  "scripts": {
+    "dev:portal": "npm run dev --prefix student-admission-portal-vercel",
+    "build:portal": "npm run build --prefix student-admission-portal-vercel",
+    "start:portal": "npm run start --prefix student-admission-portal-vercel",
+    "lint:portal": "npm run lint --prefix student-admission-portal-vercel",
+    "test:portal": "npm test --prefix student-admission-portal-vercel",
+    "dev:server": "npm run dev --prefix server",
+    "start:server": "npm start --prefix server",
+    "test:server": "npm test --prefix server",
+    "odoo:up": "cd student-admission-odoo-backend && ./deployment/start.sh",
+    "odoo:down": "cd student-admission-odoo-backend && ./deployment/stop.sh"
+  }
+}

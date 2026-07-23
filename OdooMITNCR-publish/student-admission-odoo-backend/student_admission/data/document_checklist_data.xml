@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="document_checklist_identity" model="student.document.checklist">
+    <field name="name">Identity Proof (Aadhaar/PAN/Passport)</field>
+    <field name="code">IDENTITY</field>
+    <field name="sequence">10</field>
+    <field name="required" eval="True"/>
+  </record>
+
+  <record id="document_checklist_address" model="student.document.checklist">
+    <field name="name">Address Proof</field>
+    <field name="code">ADDRESS</field>
+    <field name="sequence">20</field>
+    <field name="required" eval="True"/>
+  </record>
+
+  <record id="document_checklist_marksheet" model="student.document.checklist">
+    <field name="name">Previous Mark Sheet</field>
+    <field name="code">MARKSHEET</field>
+    <field name="sequence">30</field>
+    <field name="required" eval="True"/>
+  </record>
+
+  <record id="document_checklist_photo" model="student.document.checklist">
+    <field name="name">Passport Size Photograph</field>
+    <field name="code">PHOTO</field>
+    <field name="sequence">40</field>
+    <field name="required" eval="True"/>
+  </record>
+
+  <record id="document_checklist_certificate" model="student.document.checklist">
+    <field name="name">Transfer/Migration Certificate</field>
+    <field name="code">CERTIFICATE</field>
+    <field name="sequence">50</field>
+    <field name="required" eval="False"/>
+  </record>
+</odoo>

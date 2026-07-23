@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="demo_campus_main" model="student.campus">
+    <field name="name">Main Campus</field>
+    <field name="code">CAMP-MAIN</field>
+    <field name="city">Mumbai</field>
+    <field name="phone">+91 22 1234 5678</field>
+    <field name="email">admissions@example.edu</field>
+    <field name="address">123 University Road, Andheri East</field>
+  </record>
+
+  <record id="demo_department_cs" model="student.department">
+    <field name="name">Computer Science</field>
+    <field name="code">DEPT-CS</field>
+    <field name="campus_id" ref="demo_campus_main"/>
+  </record>
+
+  <record id="demo_department_mgmt" model="student.department">
+    <field name="name">Business Management</field>
+    <field name="code">DEPT-BM</field>
+    <field name="campus_id" ref="demo_campus_main"/>
+  </record>
+
+  <record id="demo_academic_year" model="student.academic.year">
+    <field name="name">2025-2026</field>
+    <field name="code">AY2526</field>
+    <field name="date_start">2025-07-01</field>
+    <field name="date_end">2026-06-30</field>
+    <field name="current" eval="True"/>
+  </record>
+
+  <record id="demo_program_bca" model="student.program">
+    <field name="name">Bachelor of Computer Applications</field>
+    <field name="code">BCA</field>
+    <field name="department_id" ref="demo_department_cs"/>
+    <field name="duration_years">3</field>
+  </record>
+
+  <record id="demo_program_mba" model="student.program">
+    <field name="name">Master of Business Administration</field>
+    <field name="code">MBA</field>
+    <field name="department_id" ref="demo_department_mgmt"/>
+    <field name="duration_years">2</field>
+  </record>
+
+  <record id="demo_course_bca" model="student.course">
+    <field name="name">BCA - Computer Applications</field>
+    <field name="code">BCA-101</field>
+    <field name="program_id" ref="demo_program_bca"/>
+    <field name="duration_months">36</field>
+    <field name="total_seats">60</field>
+    <field name="admission_fee">5000</field>
+    <field name="course_fee">120000</field>
+    <field name="eligibility_criteria">10+2 with Mathematics. Minimum 50% aggregate.</field>
+  </record>
+
+  <record id="demo_course_mba" model="student.course">
+    <field name="name">MBA - Business Administration</field>
+    <field name="code">MBA-101</field>
+    <field name="program_id" ref="demo_program_mba"/>
+    <field name="duration_months">24</field>
+    <field name="total_seats">40</field>
+    <field name="admission_fee">10000</field>
+    <field name="course_fee">250000</field>
+    <field name="eligibility_criteria">Graduation with minimum 55%. Valid entrance exam score.</field>
+  </record>
+
+  <record id="demo_semester_1" model="student.semester">
+    <field name="name">Semester 1</field>
+    <field name="code">SEM-1</field>
+    <field name="sequence">1</field>
+    <field name="program_id" ref="demo_program_bca"/>
+    <field name="academic_year_id" ref="demo_academic_year"/>
+    <field name="date_start">2025-07-01</field>
+    <field name="date_end">2025-12-31</field>
+  </record>
+
+  <record id="demo_batch_bca" model="student.batch">
+    <field name="name">BCA Batch 2025</field>
+    <field name="code">BCA-BATCH-2025</field>
+    <field name="course_id" ref="demo_course_bca"/>
+    <field name="academic_year_id" ref="demo_academic_year"/>
+    <field name="start_date">2025-07-15</field>
+    <field name="capacity">60</field>
+  </record>
+
+  <record id="demo_registration_1" model="student.registration">
+    <field name="first_name">Rahul</field>
+    <field name="last_name">Sharma</field>
+    <field name="date_of_birth">2005-03-15</field>
+    <field name="gender">male</field>
+    <field name="address">45 MG Road, Pune</field>
+    <field name="city">Pune</field>
+    <field name="mobile">9876543210</field>
+    <field name="email">rahul.sharma@example.com</field>
+    <field name="aadhaar_number">123456789012</field>
+    <field name="parent_name">Anil Sharma</field>
+    <field name="parent_relation">father</field>
+    <field name="parent_mobile">9876543211</field>
+    <field name="parent_email">anil.sharma@example.com</field>
+    <field name="state">registered</field>
+  </record>
+
+  <record id="demo_admission_1" model="student.admission.application">
+    <field name="registration_id" ref="demo_registration_1"/>
+    <field name="academic_year_id" ref="demo_academic_year"/>
+    <field name="course_id" ref="demo_course_bca"/>
+    <field name="batch_id" ref="demo_batch_bca"/>
+    <field name="state">submitted</field>
+  </record>
+</odoo>

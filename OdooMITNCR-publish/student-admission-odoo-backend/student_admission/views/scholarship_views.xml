@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_scholarship_tree" model="ir.ui.view">
+    <field name="name">student.scholarship.tree</field>
+    <field name="model">student.scholarship</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="code"/><field name="name"/><field name="scholarship_type"/>
+        <field name="percentage"/><field name="amount"/><field name="active"/>
+      </tree>
+    </field>
+  </record>
+  <record id="view_scholarship_form" model="ir.ui.view">
+    <field name="name">student.scholarship.form</field>
+    <field name="model">student.scholarship</field>
+    <field name="arch" type="xml">
+      <form><sheet><group>
+        <field name="name"/><field name="code"/><field name="scholarship_type"/>
+        <field name="percentage"/><field name="amount"/><field name="currency_id" invisible="1"/>
+        <field name="active"/><field name="description"/>
+      </group></sheet></form>
+    </field>
+  </record>
+  <record id="view_discount_tree" model="ir.ui.view">
+    <field name="name">student.discount.tree</field>
+    <field name="model">student.discount</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="code"/><field name="name"/><field name="discount_type"/>
+        <field name="percentage"/><field name="amount"/><field name="active"/>
+      </tree>
+    </field>
+  </record>
+  <record id="view_discount_form" model="ir.ui.view">
+    <field name="name">student.discount.form</field>
+    <field name="model">student.discount</field>
+    <field name="arch" type="xml">
+      <form><sheet><group>
+        <field name="name"/><field name="code"/><field name="discount_type"/>
+        <field name="percentage"/><field name="amount"/><field name="currency_id" invisible="1"/>
+        <field name="active"/>
+      </group></sheet></form>
+    </field>
+  </record>
+  <record id="action_scholarship" model="ir.actions.act_window">
+    <field name="name">Scholarships</field>
+    <field name="res_model">student.scholarship</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+  <record id="action_discount" model="ir.actions.act_window">
+    <field name="name">Discounts</field>
+    <field name="res_model">student.discount</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+  <menuitem id="menu_scholarship" name="Scholarships" parent="menu_student_admission_configuration" action="action_scholarship" sequence="30"/>
+  <menuitem id="menu_discount" name="Discounts" parent="menu_student_admission_configuration" action="action_discount" sequence="40"/>
+</odoo>

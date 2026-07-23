@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
   'name': 'Student Admission ERP',
-  'version': '17.0.2.0.0',
+  'version': '17.0.3.0.0',
   'category': 'Education',
   'summary': 'Student Registration and Admission Management System',
   'description': """

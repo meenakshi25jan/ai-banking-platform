@@ -42,7 +42,7 @@
           <button name="action_reset_draft" string="Reset to Draft" type="object"
             invisible="state == 'draft'"/>
           <field name="state" widget="statusbar"
-            statusbar_visible="draft,submitted,under_review,verified,approved,admitted"/>
+            statusbar_visible="draft,submitted,under_review,verified,approved,rejected,admitted"/>
         </header>
         <sheet>
           <div class="oe_title">

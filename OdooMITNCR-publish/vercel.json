@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "cd student-admission-portal-vercel && npm install",
+  "buildCommand": "cd student-admission-portal-vercel && npm run build",
+  "devCommand": "cd student-admission-portal-vercel && npm run dev",
+  "outputDirectory": "student-admission-portal-vercel/.next",
+  "regions": ["bom1"]
+}

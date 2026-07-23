@@ -34,6 +34,7 @@
             <group>
               <field name="duration_months"/>
               <field name="total_seats"/>
+              <field name="min_merit_score"/>
               <field name="available_seats"/>
               <field name="currency_id" invisible="1"/>
               <field name="admission_fee"/>

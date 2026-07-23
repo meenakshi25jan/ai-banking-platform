@@ -1,0 +1,24 @@
+FROM odoo:17.0
+
+USER root
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY student_admission /mnt/extra-addons/student_admission
+COPY deployment/odoo.conf /etc/odoo/odoo.conf
+COPY deployment/entrypoint.sh /entrypoint-custom.sh
+
+RUN chmod +x /entrypoint-custom.sh \
+    && chown -R odoo:odoo /mnt/extra-addons/student_admission /etc/odoo/odoo.conf
+
+USER odoo
+
+EXPOSE 8069
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=5 \
+  CMD curl -f http://localhost:8069/api/health || exit 1
+
+ENTRYPOINT ["/entrypoint-custom.sh"]
+CMD ["odoo"]

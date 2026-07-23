@@ -25,7 +25,12 @@ class StudentCourse(models.Model):
     readonly=True,
   )
   duration_months = fields.Integer(string='Duration (Months)', default=36)
-  total_seats = fields.Integer(string='Available Seats', default=60)
+  total_seats = fields.Integer(string='Total Seats', default=60)
+  min_merit_score = fields.Float(
+    string='Minimum Merit Score',
+    default=0.0,
+    help='Minimum merit score required for admission eligibility.',
+  )
   admission_fee = fields.Monetary(string='Admission Fee', currency_field='currency_id')
   course_fee = fields.Monetary(string='Course Fee', currency_field='currency_id')
   currency_id = fields.Many2one(

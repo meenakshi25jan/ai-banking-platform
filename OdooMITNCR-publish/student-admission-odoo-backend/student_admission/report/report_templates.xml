@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_student_registration_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="doc">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Student Registration Report</h2>
+            <table class="table table-sm">
+              <tr><td><strong>Registration No.</strong></td><td><t t-esc="doc.name"/></td></tr>
+              <tr><td><strong>Full Name</strong></td><td><t t-esc="doc.full_name"/></td></tr>
+              <tr><td><strong>Date of Birth</strong></td><td><t t-esc="doc.date_of_birth"/></td></tr>
+              <tr><td><strong>Gender</strong></td><td><t t-esc="doc.gender"/></td></tr>
+              <tr><td><strong>Email</strong></td><td><t t-esc="doc.email"/></td></tr>
+              <tr><td><strong>Mobile</strong></td><td><t t-esc="doc.mobile"/></td></tr>
+              <tr><td><strong>Aadhaar/ID</strong></td><td><t t-esc="doc.aadhaar_number"/></td></tr>
+              <tr><td><strong>Parent/Guardian</strong></td><td><t t-esc="doc.parent_name"/></td></tr>
+              <tr><td><strong>Status</strong></td><td><t t-esc="doc.state"/></td></tr>
+            </table>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <template id="report_admission_summary_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="doc">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Admission Summary Report</h2>
+            <table class="table table-sm">
+              <tr><td><strong>Admission No.</strong></td><td><t t-esc="doc.name"/></td></tr>
+              <tr><td><strong>Student</strong></td><td><t t-esc="doc.full_name"/></td></tr>
+              <tr><td><strong>Course</strong></td><td><t t-esc="doc.course_id.name"/></td></tr>
+              <tr><td><strong>Department</strong></td><td><t t-esc="doc.department_id.name"/></td></tr>
+              <tr><td><strong>Academic Year</strong></td><td><t t-esc="doc.academic_year_id.name"/></td></tr>
+              <tr><td><strong>Status</strong></td><td><t t-esc="doc.state"/></td></tr>
+              <tr><td><strong>Total Fee</strong></td><td><t t-esc="doc.total_fee"/></td></tr>
+              <tr><td><strong>Paid Fee</strong></td><td><t t-esc="doc.paid_fee"/></td></tr>
+              <tr><td><strong>Pending Fee</strong></td><td><t t-esc="doc.pending_fee"/></td></tr>
+            </table>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <template id="report_fee_collection_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="doc">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Fee Collection Report</h2>
+            <table class="table table-sm">
+              <tr><td><strong>Receipt No.</strong></td><td><t t-esc="doc.name"/></td></tr>
+              <tr><td><strong>Student</strong></td><td><t t-esc="doc.student_name"/></td></tr>
+              <tr><td><strong>Course</strong></td><td><t t-esc="doc.course_id.name"/></td></tr>
+              <tr><td><strong>Fee Type</strong></td><td><t t-esc="doc.fee_type"/></td></tr>
+              <tr><td><strong>Amount</strong></td><td><t t-esc="doc.amount"/></td></tr>
+              <tr><td><strong>Due Date</strong></td><td><t t-esc="doc.due_date"/></td></tr>
+              <tr><td><strong>Payment Date</strong></td><td><t t-esc="doc.payment_date"/></td></tr>
+              <tr><td><strong>Status</strong></td><td><t t-esc="doc.state"/></td></tr>
+            </table>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+</odoo>

@@ -67,4 +67,28 @@
       </t>
     </t>
   </template>
+
+  <template id="report_fee_receipt_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="doc">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Fee Payment Receipt</h2>
+            <table class="table table-sm">
+              <tr><td><strong>Receipt No.</strong></td><td><t t-esc="doc.name"/></td></tr>
+              <tr><td><strong>Student</strong></td><td><t t-esc="doc.student_name"/></td></tr>
+              <tr><td><strong>Admission No.</strong></td><td><t t-esc="doc.admission_id.name"/></td></tr>
+              <tr><td><strong>Fee Type</strong></td><td><t t-esc="doc.fee_type"/></td></tr>
+              <tr><td><strong>Amount</strong></td><td><t t-esc="doc.amount"/></td></tr>
+              <tr><td><strong>Scholarship</strong></td><td><t t-esc="doc.scholarship_amount"/></td></tr>
+              <tr><td><strong>Discount</strong></td><td><t t-esc="doc.discount_amount"/></td></tr>
+              <tr><td><strong>Net Paid</strong></td><td><t t-esc="doc.net_amount"/></td></tr>
+              <tr><td><strong>Payment Date</strong></td><td><t t-esc="doc.payment_date"/></td></tr>
+              <tr><td><strong>Method</strong></td><td><t t-esc="doc.payment_method"/></td></tr>
+            </table>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
 </odoo>
