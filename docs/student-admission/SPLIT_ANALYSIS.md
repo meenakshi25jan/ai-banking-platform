@@ -129,30 +129,14 @@ These are **NOT** part of Student Admission ERP:
 
 ## Push to GitHub as separate repos
 
+See **[SPLIT_REPOS_SETUP.md](./SPLIT_REPOS_SETUP.md)** for step-by-step publish instructions.
+
+Quick start:
+
 ```bash
-# 1. Create repos on GitHub:
-#    - student-admission-odoo-backend
-#    - student-admission-portal-vercel
-
-# 2. Push backend
-cd student-admission-odoo-backend
-git init
-git add .
-git commit -m "Initial commit: Odoo 17 Student Admission ERP backend"
-git remote add origin git@github.com:YOUR_ORG/student-admission-odoo-backend.git
-git branch -M main
-git push -u origin main
-
-# 3. Push portal
-cd ../student-admission-portal-vercel
-git init
-git add .
-git commit -m "Initial commit: Next.js Student Admission portal"
-git remote add origin git@github.com:YOUR_ORG/student-admission-portal-vercel.git
-git branch -M main
-git push -u origin main
-
-# 4. Connect Vercel to student-admission-portal-vercel only
+# 1. Create empty repos on GitHub (links in SPLIT_REPOS_SETUP.md)
+# 2. Push both repos:
+./scripts/push-split-repos.sh YOUR_ORG --push
 ```
 
 ---
