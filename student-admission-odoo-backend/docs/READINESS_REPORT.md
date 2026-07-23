@@ -19,7 +19,7 @@ The Student Admission ERP platform has been reviewed and updated for **full loca
 | `deployment/start-portal.sh` | ✅ Created/Updated | npm dev or docker mode |
 | `deployment/stop.sh` | ✅ Created | Stops docker stack |
 | `deployment/lib/common.sh` | ✅ Created | Shared wait/env helpers |
-| `deployment/entrypoint-odoo.sh` | ✅ Created | Auto DB + module install |
+| `deployment/entrypoint.sh` | ✅ Created | Auto DB + module install |
 | `docker-compose.yml` (root) | ✅ Created | postgres + odoo + portal |
 | `deployment/docker-compose.yml` | ✅ Updated | Pointer to root compose |
 | `deployment/Dockerfile.odoo` | ✅ Updated | curl, pg client, healthcheck |
