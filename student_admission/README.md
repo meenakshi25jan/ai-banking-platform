@@ -110,11 +110,220 @@ student_admission/
 
 Authentication: Odoo user session (auth='user').
 
-## Running Tests
+## How to Test
+
+### Prerequisites
+
+1. Install the module on a test database (with demo data enabled for quicker setup).
+2. Create or use test users for each role:
+   - **Admission Administrator** (full access)
+   - **Admission Officer** (registrations & verification)
+   - **Account Officer** (fees only)
+   - **Student** (portal user)
+3. Configure an **Outgoing Mail Server** under Settings if you want to verify email notifications.
+
+---
+
+### 1. Automated Unit Tests
+
+Run all module tests on a fresh database:
 
 ```bash
-./odoo-bin -c odoo.conf -d test_db -i student_admission --test-enable --stop-after-init
+./odoo-bin -c odoo.conf -d student_admission_test \
+  -i student_admission \
+  --test-enable \
+  --stop-after-init \
+  --log-level=test
 ```
+
+Run only this module's tests (after the module is installed):
+
+```bash
+./odoo-bin -c odoo.conf -d student_admission_test \
+  --test-enable \
+  --stop-after-init \
+  -u student_admission \
+  --log-level=test
+```
+
+**What is covered by unit tests** (`tests/test_student_admission.py`):
+
+| Test Class | Validates |
+|------------|-----------|
+| `TestStudentRegistration` | Sequence generation, registration workflow, full name compute |
+| `TestAdmissionApplication` | Full admission flow: submit → verify docs → approve → pay fees → admit |
+| `TestCourseManagement` | Available seats calculation, academic year date validation |
+
+**Expected result:** All tests pass with no errors in the log. Look for lines like:
+
+```
+odoo.tests.common: Starting TestStudentRegistration.test_registration_workflow ...
+```
+
+---
+
+### 2. Manual UI Testing (End-to-End)
+
+Use demo data or create records manually. Follow this checklist:
+
+#### A. Academic Setup
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Go to **Student Admission → Configuration → Campuses** | Campus list opens |
+| 2 | Create campus, department, program, course | Records save with unique codes |
+| 3 | Create academic year and mark as **Current** | Only one year can be current |
+| 4 | Create a batch linked to course + academic year | Batch appears in admission form |
+
+#### B. Student Registration
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Go to **Operations → Student Registrations → Create** | New draft registration |
+| 2 | Fill personal info, parent details, upload photo | Form saves |
+| 3 | Add supporting documents in the Documents tab | Documents attach |
+| 4 | Click **Confirm Registration** | State → Registered, number like `REG/2026/00001` |
+| 5 | Check student email (if mail server configured) | Registration confirmation email received |
+
+#### C. Admission Application
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | From registration, click **Create Admission** | Admission form opens pre-filled |
+| 2 | Select academic year and course, save | Document checklist auto-created |
+| 3 | Click **Submit** | State → Submitted |
+| 4 | Click **Under Review** | State → Under Review |
+| 5 | Upload docs on each verification line, click **Submit** then **Approve** | All required docs → Approved |
+| 6 | Click **Approve** | State → Approved, fee lines created |
+| 7 | Go to Fee Payments tab, **Register Payment** for each fee | Fees → Paid |
+| 8 | Click **Admit Student** | State → Admitted |
+
+#### D. Rejection Flow
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Create a new submitted application | State = Submitted |
+| 2 | Click **Reject**, enter reason | State → Rejected, rejection email sent |
+| 3 | Reject a document via **Reject** wizard | Document state → Rejected with remarks |
+
+#### E. Dashboard & Reports
+
+| Step | Action | Expected Result |
+|------|--------|-----------------|
+| 1 | Open **Student Admission → Dashboard** | KPIs show correct counts |
+| 2 | Click stat buttons (Pending, Approved, etc.) | Filtered list views open |
+| 3 | Open **Reports → Admission Summary Report** | Pivot/graph views load |
+| 4 | Print PDF from a registration or admission form | PDF generates correctly |
+
+---
+
+### 3. Security & Role Testing
+
+Log in as each test user and verify access:
+
+| Role | Should Access | Should NOT Access |
+|------|---------------|-------------------|
+| Admission Officer | Registrations, admissions, document verification | Fee payment registration (write) |
+| Account Officer | Fee payments, pending fees, dashboard | Course/campus configuration |
+| Student (portal) | Own registration, own applications, upload docs | Other students' records |
+| Administrator | Everything | — |
+
+**Portal student test:**
+
+1. Create a portal user and link to a registration (`user_id` field).
+2. Assign the **Student** security group.
+3. Log in at `/my` and confirm the student sees only their own records.
+
+---
+
+### 4. REST API Testing
+
+Log in to Odoo in a browser first to obtain a session, then use the session cookie in API calls.
+
+**List admissions:**
+
+```bash
+curl -b cookies.txt -c cookies.txt \
+  "http://localhost:8069/api/student/admissions"
+```
+
+**Get admission detail:**
+
+```bash
+curl -b cookies.txt \
+  "http://localhost:8069/api/student/admissions/1"
+```
+
+**Create registration (JSON-RPC style):**
+
+```bash
+curl -b cookies.txt -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "call",
+    "params": {
+      "first_name": "Test",
+      "last_name": "User",
+      "email": "testuser@example.com",
+      "mobile": "9000000099",
+      "date_of_birth": "2005-06-15",
+      "gender": "male",
+      "address": "123 Test Street",
+      "parent_name": "Parent User",
+      "parent_mobile": "9000000088"
+    },
+    "id": 1
+  }' \
+  "http://localhost:8069/api/student/registrations"
+```
+
+**Expected result:** JSON response with `"status": "success"` and a generated registration number.
+
+---
+
+### 5. Email Notification Testing
+
+| Trigger | How to Test | Expected Email |
+|---------|-------------|----------------|
+| Registration confirmed | Confirm a draft registration | Registration Confirmation |
+| Admission approved | Approve a fully verified application | Admission Approval |
+| Admission rejected | Reject via wizard with reason | Admission Rejection |
+| Fee due reminder | Set fee `due_date` within 7 days, run cron manually | Fee Due Reminder |
+
+**Run fee reminder cron manually** (Developer Mode → Settings → Technical → Scheduled Actions → *Student Admission: Fee Due Reminder* → Run Manually).
+
+Or from Odoo shell:
+
+```python
+env['student.fee.payment']._cron_send_fee_due_reminders()
+```
+
+---
+
+### 6. Demo Data Verification
+
+If installed with demo data, confirm these records exist:
+
+- **Campus:** Main Campus (`CAMP-MAIN`)
+- **Courses:** BCA-101, MBA-101
+- **Registration:** Rahul Sharma (registered)
+- **Admission:** Submitted application for BCA
+
+Navigate to **Student Admission** menu and verify counts on the dashboard match the demo records.
+
+---
+
+### 7. Common Issues & Troubleshooting
+
+| Issue | Likely Cause | Fix |
+|-------|--------------|-----|
+| Cannot approve admission | Required documents not approved | Approve all required verification lines first |
+| Cannot admit student | Pending fees remain | Register payment for all fee lines |
+| No seats available | Course capacity reached | Increase `total_seats` on the course |
+| Emails not sent | Mail server not configured | Set up outgoing mail in Settings |
+| Portal user sees nothing | `user_id` not set on registration | Link portal user to registration record |
+| Aadhaar duplicate error | Unique constraint | Use a unique Aadhaar/identity number per student |
 
 ## Reports
 
