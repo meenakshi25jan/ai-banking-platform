@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_student_admission_root"
+    name="Student Admission"
+    sequence="10"
+    web_icon="student_admission,static/description/icon.png"
+    groups="student_admission.group_student_admission_officer,student_admission.group_student_account_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_admission_dashboard"
+    name="Dashboard"
+    parent="menu_student_admission_root"
+    action="action_student_admission_dashboard"
+    sequence="1"
+    groups="student_admission.group_student_admission_officer,student_admission.group_student_account_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_admission_operations"
+    name="Operations"
+    parent="menu_student_admission_root"
+    sequence="10"/>
+
+  <menuitem id="menu_student_registration"
+    name="Student Registrations"
+    parent="menu_student_admission_operations"
+    action="action_student_registration"
+    sequence="10"
+    groups="student_admission.group_student_admission_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_admission"
+    name="Admission Applications"
+    parent="menu_student_admission_operations"
+    action="action_student_admission"
+    sequence="20"
+    groups="student_admission.group_student_admission_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_document_verification"
+    name="Document Verifications"
+    parent="menu_student_admission_operations"
+    action="action_document_verification"
+    sequence="30"
+    groups="student_admission.group_student_admission_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_fee"
+    name="Fee Management"
+    parent="menu_student_admission_root"
+    sequence="20"/>
+
+  <menuitem id="menu_student_fee_payment"
+    name="Fee Payments"
+    parent="menu_student_fee"
+    action="action_student_fee_payment"
+    sequence="10"
+    groups="student_admission.group_student_account_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_fee_pending"
+    name="Pending Fees"
+    parent="menu_student_fee"
+    action="action_student_fee_pending"
+    sequence="20"
+    groups="student_admission.group_student_account_officer,student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_admission_configuration"
+    name="Configuration"
+    parent="menu_student_admission_root"
+    sequence="90"
+    groups="student_admission.group_student_admission_admin"/>
+
+  <menuitem id="menu_student_academic_structure"
+    name="Academic Structure"
+    parent="menu_student_admission_configuration"
+    sequence="10"/>
+
+  <menuitem id="menu_student_campus"
+    name="Campuses"
+    parent="menu_student_academic_structure"
+    action="action_student_campus"
+    sequence="10"/>
+
+  <menuitem id="menu_student_department"
+    name="Departments"
+    parent="menu_student_academic_structure"
+    action="action_student_department"
+    sequence="20"/>
+
+  <menuitem id="menu_student_program"
+    name="Programs"
+    parent="menu_student_academic_structure"
+    action="action_student_program"
+    sequence="30"/>
+
+  <menuitem id="menu_student_course"
+    name="Courses"
+    parent="menu_student_academic_structure"
+    action="action_student_course"
+    sequence="40"/>
+
+  <menuitem id="menu_student_semester"
+    name="Semesters"
+    parent="menu_student_academic_structure"
+    action="action_student_semester"
+    sequence="50"/>
+
+  <menuitem id="menu_student_batch"
+    name="Batches"
+    parent="menu_student_academic_structure"
+    action="action_student_batch"
+    sequence="60"/>
+
+  <menuitem id="menu_student_academic_year"
+    name="Academic Years"
+    parent="menu_student_academic_structure"
+    action="action_student_academic_year"
+    sequence="70"/>
+
+  <menuitem id="menu_document_checklist"
+    name="Document Checklist"
+    parent="menu_student_admission_configuration"
+    action="action_document_checklist"
+    sequence="20"/>
+
+  <menuitem id="menu_student_admission_reports"
+    name="Reports"
+    parent="menu_student_admission_root"
+    sequence="80"/>
+
+  <menuitem id="menu_report_student_registration"
+    name="Student Registration Report"
+    parent="menu_student_admission_reports"
+    action="action_report_student_registration_list"
+    sequence="10"/>
+
+  <menuitem id="menu_report_admission_summary"
+    name="Admission Summary Report"
+    parent="menu_student_admission_reports"
+    action="action_report_admission_summary_list"
+    sequence="20"/>
+
+  <menuitem id="menu_report_fee_collection"
+    name="Fee Collection Report"
+    parent="menu_student_admission_reports"
+    action="action_report_fee_collection_list"
+    sequence="30"/>
+</odoo>
