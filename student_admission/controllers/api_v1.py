@@ -13,6 +13,31 @@ _logger = logging.getLogger(__name__)
 
 class StudentAdmissionAPIv1(http.Controller, CorsMixin):
 
+  # ── Health ────────────────────────────────────────────────────────
+
+  @http.route('/api/health', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
+  @http.route('/api/v1/health', type='http', auth='none', methods=['GET', 'OPTIONS'], csrf=False)
+  def health(self, **kwargs):
+    opts = self._handle_options()
+    if opts:
+      return opts
+    database = request.db or 'none'
+    db_ok = False
+    if request.db:
+      try:
+        request.env.cr.execute('SELECT 1')
+        db_ok = True
+      except Exception:
+        db_ok = False
+    payload = {
+      'status': 'ok' if db_ok or not request.db else 'degraded',
+      'service': 'student-admission-odoo',
+      'database': database,
+      'db_connected': db_ok,
+    }
+    status_code = 200 if (db_ok or not request.db) else 503
+    return self._json_response(payload, status_code)
+
   # ── Auth ──────────────────────────────────────────────────────────
 
   @http.route('/api/v1/auth/login', type='http', auth='none', methods=['POST', 'OPTIONS'], csrf=False, cors='*')

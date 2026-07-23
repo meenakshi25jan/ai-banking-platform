@@ -26,20 +26,25 @@ A production-ready **Student Registration and Admission Management** platform bu
 └── .github/workflows/     # CI/CD pipelines
 ```
 
-## Quick Start (Docker)
+## Quick Start
 
 ```bash
-# 1. Start Odoo + PostgreSQL
+# 1. Start Odoo + PostgreSQL (auto-creates DB + installs modules)
 chmod +x deployment/start.sh && ./deployment/start.sh
 
-# 2. Create database at http://localhost:8069 (name: student_admission)
-
-# 3. Start portal
+# 2. Start Next.js portal
 chmod +x deployment/start-portal.sh && ./deployment/start-portal.sh
+
+# OR start all services with Docker:
+cp deployment/.env.example .env
+docker compose -f deployment/docker-compose.yml up -d
 ```
 
 - **Portal:** http://localhost:3000
 - **Odoo:** http://localhost:8069 (admin / admin)
+- **Health:** http://localhost:8069/api/health · http://localhost:3000/api/health
+
+See **[docs/student-admission/RUNNING_GUIDE.md](docs/student-admission/RUNNING_GUIDE.md)** for full instructions.
 
 ## Features
 
