@@ -1,0 +1,83 @@
+# Student Admission ERP — Docker Compose
+# Run from repository root:
+#   docker compose -f deployment/docker-compose.yml up -d
+#
+# Or use helper scripts:
+#   ./deployment/start.sh
+#   ./deployment/start-portal.sh docker
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: student-admission-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    volumes:
+      - student-admission-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo} -d ${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  odoo:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.odoo
+    container_name: student-admission-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      PORT: 5432
+      ODOO_DB_USER: ${ODOO_DB_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      ODOO_DATABASE: ${ODOO_DATABASE:-student_admission}
+      STUDENT_ADMISSION_CORS_ORIGINS: ${STUDENT_ADMISSION_CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+    volumes:
+      - student-admission-odoo-data:/var/lib/odoo
+      - ../student_admission:/mnt/extra-addons/student_admission:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8069/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+
+  portal:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile.portal
+      args:
+        NEXT_PUBLIC_ODOO_URL: ${NEXT_PUBLIC_ODOO_URL:-http://localhost:8069}
+        NEXT_PUBLIC_ODOO_DB: ${NEXT_PUBLIC_ODOO_DB:-student_admission}
+    container_name: student-admission-portal
+    restart: unless-stopped
+    depends_on:
+      odoo:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_ODOO_URL: ${NEXT_PUBLIC_ODOO_URL:-http://localhost:8069}
+      NEXT_PUBLIC_ODOO_DB: ${NEXT_PUBLIC_ODOO_DB:-student_admission}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  student-admission-db-data:
+  student-admission-odoo-data:

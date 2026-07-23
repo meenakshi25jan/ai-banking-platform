@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_report_student_registration" model="ir.actions.report">
+    <field name="name">Student Registration Report</field>
+    <field name="model">student.registration</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">student_admission.report_student_registration_document</field>
+    <field name="report_file">student_admission.report_student_registration_document</field>
+    <field name="binding_model_id" ref="model_student_registration"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_admission_summary" model="ir.actions.report">
+    <field name="name">Admission Summary Report</field>
+    <field name="model">student.admission.application</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">student_admission.report_admission_summary_document</field>
+    <field name="report_file">student_admission.report_admission_summary_document</field>
+    <field name="binding_model_id" ref="model_student_admission_application"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_fee_collection" model="ir.actions.report">
+    <field name="name">Fee Collection Report</field>
+    <field name="model">student.fee.payment</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">student_admission.report_fee_collection_document</field>
+    <field name="report_file">student_admission.report_fee_collection_document</field>
+    <field name="binding_model_id" ref="model_student_fee_payment"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <!-- Additional list actions for reports menu -->
+  <record id="action_report_student_registration_list" model="ir.actions.act_window">
+    <field name="name">Student Registration Report</field>
+    <field name="res_model">student.registration</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{}</field>
+  </record>
+
+  <record id="action_report_admission_summary_list" model="ir.actions.act_window">
+    <field name="name">Admission Summary Report</field>
+    <field name="res_model">student.admission.application</field>
+    <field name="view_mode">tree,form,pivot,graph</field>
+  </record>
+
+  <record id="action_report_fee_collection_list" model="ir.actions.act_window">
+    <field name="name">Fee Collection Report</field>
+    <field name="res_model">student.fee.payment</field>
+    <field name="view_mode">tree,form,graph</field>
+    <field name="domain">[('state', '=', 'paid')]</field>
+  </record>
+</odoo>
