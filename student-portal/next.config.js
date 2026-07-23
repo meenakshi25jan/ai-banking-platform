@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // Standalone is for Docker only — it breaks Vercel deployments
+  ...(process.env.DOCKER_BUILD === 'true' ? { output: 'standalone' } : {}),
   images: { domains: ['localhost'] },
   async headers() {
     return [
