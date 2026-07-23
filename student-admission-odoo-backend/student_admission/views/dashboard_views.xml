@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_student_admission_dashboard_form" model="ir.ui.view">
+    <field name="name">student.admission.dashboard.form</field>
+    <field name="model">student.admission.dashboard</field>
+    <field name="arch" type="xml">
+      <form create="false" edit="false" delete="false">
+        <sheet>
+          <div class="oe_title">
+            <h1>Admission Dashboard</h1>
+          </div>
+          <group>
+            <group string="Applications Overview">
+              <field name="total_applications"/>
+              <field name="pending_applications"/>
+              <field name="approved_applications"/>
+              <field name="rejected_applications"/>
+              <field name="admitted_applications"/>
+              <field name="total_registrations"/>
+            </group>
+            <group string="Fee Collection Summary">
+              <field name="currency_id" invisible="1"/>
+              <field name="total_fee_collected"/>
+              <field name="total_fee_pending"/>
+            </group>
+          </group>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_applications" type="object" class="oe_stat_button" icon="fa-list">
+              <field name="total_applications" widget="statinfo" string="Applications"/>
+            </button>
+            <button name="action_view_pending" type="object" class="oe_stat_button" icon="fa-clock-o">
+              <field name="pending_applications" widget="statinfo" string="Pending"/>
+            </button>
+            <button name="action_view_approved" type="object" class="oe_stat_button" icon="fa-check">
+              <field name="approved_applications" widget="statinfo" string="Approved"/>
+            </button>
+            <button name="action_view_rejected" type="object" class="oe_stat_button" icon="fa-times">
+              <field name="rejected_applications" widget="statinfo" string="Rejected"/>
+            </button>
+            <button name="action_view_fees" type="object" class="oe_stat_button" icon="fa-money">
+              <field name="total_fee_collected" widget="statinfo" string="Fees Collected"/>
+            </button>
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_student_admission_dashboard" model="ir.actions.act_window">
+    <field name="name">Admission Dashboard</field>
+    <field name="res_model">student.admission.dashboard</field>
+    <field name="view_mode">form</field>
+    <field name="target">current</field>
+    <field name="context">{'create': False}</field>
+  </record>
+</odoo>
