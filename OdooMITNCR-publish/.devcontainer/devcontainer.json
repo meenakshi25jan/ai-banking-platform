@@ -1,0 +1,31 @@
+{
+  "name": "OdooMITNCR — Student Admission ERP",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  "forwardPorts": [3000, 5000, 8069, 5433],
+  "portsAttributes": {
+    "3000": { "label": "Next.js Portal", "onAutoForward": "openBrowser" },
+    "5000": { "label": "Banking API" },
+    "8069": { "label": "Odoo ERP", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "bash scripts/codespace-setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-python.python"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "NEXT_PUBLIC_ODOO_URL": "http://localhost:8069",
+    "NEXT_PUBLIC_ODOO_DB": "student_admission"
+  }
+}

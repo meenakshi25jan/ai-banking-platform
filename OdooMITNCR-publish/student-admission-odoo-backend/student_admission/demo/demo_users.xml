@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="user_admission_officer" model="res.users">
+    <field name="name">Admission Officer</field>
+    <field name="login">admission.officer@institute.edu</field>
+    <field name="password">demo123</field>
+    <field name="groups_id" eval="[(4, ref('group_student_admission_officer'))]"/>
+  </record>
+
+  <record id="user_account_officer" model="res.users">
+    <field name="name">Account Officer</field>
+    <field name="login">accounts@institute.edu</field>
+    <field name="password">demo123</field>
+    <field name="groups_id" eval="[(4, ref('group_student_account_officer'))]"/>
+  </record>
+
+  <record id="user_student_portal" model="res.users">
+    <field name="name">Rahul Sharma</field>
+    <field name="login">rahul.sharma@example.com</field>
+    <field name="password">demo123</field>
+    <field name="groups_id" eval="[(4, ref('group_student_portal'))]"/>
+  </record>
+
+  <record id="demo_registration_1" model="student.registration">
+    <field name="user_id" ref="user_student_portal"/>
+  </record>
+
+  <record id="demo_scholarship_merit" model="student.scholarship">
+    <field name="name">Merit Scholarship 25%</field>
+    <field name="code">SCH-MERIT-25</field>
+    <field name="scholarship_type">merit</field>
+    <field name="percentage">25</field>
+  </record>
+
+  <record id="demo_discount_early" model="student.discount">
+    <field name="name">Early Bird Discount</field>
+    <field name="code">DISC-EARLY</field>
+    <field name="discount_type">percentage</field>
+    <field name="percentage">10</field>
+  </record>
+</odoo>

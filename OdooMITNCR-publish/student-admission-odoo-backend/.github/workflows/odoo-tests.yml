@@ -1,0 +1,30 @@
+name: Odoo Backend CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax check
+        run: python -m py_compile student_admission/models/*.py student_admission/controllers/*.py student_admission/tests/*.py
+
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate module structure
+        run: |
+          test -f student_admission/__manifest__.py
+          test -f student_admission/security/ir.model.access.csv
+          test -f docker-compose.yml
+          test -f deployment/Dockerfile
+          echo "Backend structure OK"
