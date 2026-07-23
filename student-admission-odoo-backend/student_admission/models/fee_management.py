@@ -93,6 +93,16 @@ class StudentFeePayment(models.Model):
         'state': 'paid',
         'payment_date': fields.Date.today(),
       })
+      record._send_payment_confirmation_email()
+
+  def _send_payment_confirmation_email(self):
+    template = self.env.ref(
+      'student_admission.mail_template_payment_received',
+      raise_if_not_found=False,
+    )
+    if template:
+      for record in self:
+        template.send_mail(record.id, force_send=True)
 
   def action_cancel(self):
     self.write({'state': 'cancelled'})

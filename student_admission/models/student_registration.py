@@ -91,17 +91,14 @@ class StudentRegistration(models.Model):
       if record.parent_email and '@' not in record.parent_email:
         raise ValidationError('Please provide a valid parent email address.')
 
-  @api.model_create_multi
-  def create(self, vals_list):
-    for vals in vals_list:
-      if vals.get('name', 'New') == 'New':
-        vals['name'] = self.env['ir.sequence'].next_by_code('student.registration') or 'New'
-    return super().create(vals_list)
-
   def action_register(self):
     for record in self:
       if record.state != 'draft':
         continue
+      if record.name in (False, 'New'):
+        record.name = (
+          self.env['ir.sequence'].next_by_code('student.registration') or 'New'
+        )
       record.state = 'registered'
       record._send_registration_confirmation()
 

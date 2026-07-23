@@ -30,6 +30,51 @@
     <field name="binding_type">report</field>
   </record>
 
+  <record id="action_report_fee_receipt" model="ir.actions.report">
+    <field name="name">Fee Receipt</field>
+    <field name="model">student.fee.payment</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">student_admission.report_fee_receipt_document</field>
+    <field name="report_file">student_admission.report_fee_receipt_document</field>
+    <field name="binding_model_id" ref="model_student_fee_payment"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <record id="action_report_department_admissions" model="ir.actions.act_window">
+    <field name="name">Department-wise Admissions</field>
+    <field name="res_model">student.admission.application</field>
+    <field name="view_mode">pivot,graph,tree</field>
+    <field name="context">{'group_by': 'department_id'}</field>
+  </record>
+
+  <record id="action_report_course_admissions" model="ir.actions.act_window">
+    <field name="name">Course-wise Admissions</field>
+    <field name="res_model">student.admission.application</field>
+    <field name="view_mode">pivot,graph,tree</field>
+    <field name="context">{'group_by': 'course_id'}</field>
+  </record>
+
+  <record id="action_report_pending_verification" model="ir.actions.act_window">
+    <field name="name">Pending Verification Report</field>
+    <field name="res_model">student.document.verification</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('state', 'in', ['pending', 'submitted'])]</field>
+  </record>
+
+  <record id="action_report_student_master" model="ir.actions.act_window">
+    <field name="name">Student Master Report</field>
+    <field name="res_model">student.registration</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('state', '=', 'registered')]</field>
+  </record>
+
+  <record id="action_report_admitted_students" model="ir.actions.act_window">
+    <field name="name">Admitted Students Report</field>
+    <field name="res_model">student.admission.application</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('state', '=', 'admitted')]</field>
+  </record>
+
   <!-- Additional list actions for reports menu -->
   <record id="action_report_student_registration_list" model="ir.actions.act_window">
     <field name="name">Student Registration Report</field>

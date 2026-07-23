@@ -64,7 +64,8 @@ class TestStudentRegistration(TransactionCase):
 
   def test_registration_sequence_generation(self):
     registration = self._create_registration(aadhaar_number='444455556666')
-    self.assertNotEqual(registration.name, 'New')
+    self.assertEqual(registration.name, 'New')
+    registration.action_register()
     self.assertTrue(registration.name.startswith('REG/'))
 
   def test_registration_workflow(self):

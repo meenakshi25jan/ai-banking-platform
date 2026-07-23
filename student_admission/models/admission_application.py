@@ -164,11 +164,13 @@ class StudentAdmissionApplication(models.Model):
       if not record.document_verification_ids:
         record._create_document_checklist()
       record.state = 'submitted'
+      record._send_submission_email()
 
-  @api.depends('merit_score', 'course_id.eligibility_criteria')
+  @api.depends('merit_score', 'course_id.min_merit_score')
   def _compute_eligibility(self):
     for record in self:
-      record.is_eligible = record.merit_score >= 0 or not record.course_id
+      minimum = record.course_id.min_merit_score if record.course_id else 0.0
+      record.is_eligible = (record.merit_score or 0.0) >= minimum
 
   def action_verify(self):
     for record in self:
@@ -187,6 +189,10 @@ class StudentAdmissionApplication(models.Model):
         raise UserError('Only submitted, under-review, or verified applications can be approved.')
       if record.course_id.available_seats <= 0:
         raise ValidationError('No seats available for the selected course.')
+      if not record.is_eligible:
+        raise ValidationError(
+          'Student does not meet the minimum merit score for this course.',
+        )
       if record.document_verification_ids and not record.all_documents_verified:
         raise ValidationError('All required documents must be verified before approval.')
       record.state = 'approved'
@@ -212,6 +218,7 @@ class StudentAdmissionApplication(models.Model):
         raise ValidationError('All fees must be paid before admission.')
       record.state = 'admitted'
       record.admission_date = fields.Date.today()
+      record._send_admission_complete_email()
       if not record.batch_id:
         batch = self.env['student.batch'].search([
           ('course_id', '=', record.course_id.id),
@@ -228,19 +235,38 @@ class StudentAdmissionApplication(models.Model):
     for record in self:
       if record.fee_ids:
         continue
+      base = (record.course_id.admission_fee or 0.0) + (record.course_id.course_fee or 0.0)
+      scholarship_amt = 0.0
+      if record.scholarship_id:
+        if record.scholarship_id.percentage:
+          scholarship_amt = base * (record.scholarship_id.percentage / 100)
+        else:
+          scholarship_amt = record.scholarship_id.amount or 0.0
+      discount_amt = 0.0
+      if record.discount_id:
+        if record.discount_id.discount_type == 'percentage':
+          discount_amt = base * ((record.discount_id.percentage or 0) / 100)
+        else:
+          discount_amt = record.discount_id.amount or 0.0
+      total_adjustment = scholarship_amt + discount_amt
+      lines = []
       if record.course_id.admission_fee:
-        FeePayment.create({
-          'admission_id': record.id,
-          'fee_type': 'admission',
-          'amount': record.course_id.admission_fee,
-          'due_date': fields.Date.today(),
-        })
+        lines.append(('admission', record.course_id.admission_fee))
       if record.course_id.course_fee:
+        lines.append(('course', record.course_id.course_fee))
+      for fee_type, amount in lines:
+        share = (amount / base) if base else 0.0
         FeePayment.create({
           'admission_id': record.id,
-          'fee_type': 'course',
-          'amount': record.course_id.course_fee,
-          'due_date': fields.Date.today() + relativedelta(months=1),
+          'fee_type': fee_type,
+          'amount': amount,
+          'scholarship_amount': scholarship_amt * share,
+          'discount_amount': discount_amt * share,
+          'due_date': (
+            fields.Date.today()
+            if fee_type == 'admission'
+            else fields.Date.today() + relativedelta(months=1)
+          ),
         })
 
   def _send_approval_email(self):
@@ -254,6 +280,22 @@ class StudentAdmissionApplication(models.Model):
   def _send_rejection_email(self):
     template = self.env.ref(
       'student_admission.mail_template_admission_rejection',
+      raise_if_not_found=False,
+    )
+    if template:
+      template.send_mail(self.id, force_send=True)
+
+  def _send_submission_email(self):
+    template = self.env.ref(
+      'student_admission.mail_template_admission_submitted',
+      raise_if_not_found=False,
+    )
+    if template:
+      template.send_mail(self.id, force_send=True)
+
+  def _send_admission_complete_email(self):
+    template = self.env.ref(
+      'student_admission.mail_template_admission_complete',
       raise_if_not_found=False,
     )
     if template:

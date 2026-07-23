@@ -139,4 +139,40 @@
     parent="menu_student_admission_reports"
     action="action_report_fee_collection_list"
     sequence="30"/>
+
+  <menuitem id="menu_report_fee_receipt"
+    name="Fee Receipt (PDF)"
+    parent="menu_student_admission_reports"
+    action="action_report_fee_receipt"
+    sequence="35"/>
+
+  <menuitem id="menu_report_department_admissions"
+    name="Department-wise Admissions"
+    parent="menu_student_admission_reports"
+    action="action_report_department_admissions"
+    sequence="40"/>
+
+  <menuitem id="menu_report_course_admissions"
+    name="Course-wise Admissions"
+    parent="menu_student_admission_reports"
+    action="action_report_course_admissions"
+    sequence="50"/>
+
+  <menuitem id="menu_report_pending_verification"
+    name="Pending Verification Report"
+    parent="menu_student_admission_reports"
+    action="action_report_pending_verification"
+    sequence="60"/>
+
+  <menuitem id="menu_report_student_master"
+    name="Student Master Report"
+    parent="menu_student_admission_reports"
+    action="action_report_student_master"
+    sequence="70"/>
+
+  <menuitem id="menu_report_admitted_students"
+    name="Admitted Students Report"
+    parent="menu_student_admission_reports"
+    action="action_report_admitted_students"
+    sequence="80"/>
 </odoo>
